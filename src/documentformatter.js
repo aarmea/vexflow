@@ -193,8 +193,8 @@ Vex.Flow.DocumentFormatter.prototype.getVexflowVoice =function(voice, staves){
         lyricVoice.setStave(vfVoice.stave);
         // If this isn't the first note in the voice, add some padding
         for (var j = 0; j < i; j++) {
-          lyricVoice.addTickable(new Vex.Flow.TextNote({
-            text: "", duration: voice.notes[j].duration
+          lyricVoice.addTickable(new Vex.Flow.GhostNote({
+            duration: voice.notes[j].duration
           }));
         }
       }
