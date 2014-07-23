@@ -199,7 +199,9 @@ Vex.Flow.DocumentFormatter.prototype.getVexflowVoice =function(voice, staves){
         }
       }
       lyricVoice.addTickable(new Vex.Flow.TextNote({
-        text: note.lyric.text, duration: note.duration
+        // `line: 10` positions the lyric under the staff
+        // TODO(aarmea): Sometimes `line: 10` isn't low enough
+        text: note.lyric.text, duration: note.duration, line: 10
       }));
     }
     else if (lyricVoice) {
@@ -261,11 +263,18 @@ Vex.Flow.DocumentFormatter.prototype.getMinMeasureWidth = function(m) {
       var numStaves = part.getNumberOfStaves();
       var partStaves = vfStaves.slice(startStave, startStave + numStaves);
       part.getVoices().forEach(function(voice) {
-        var vfVoice = this.getVexflowVoice(voice, partStaves)[0];
-        allVfVoices.push(vfVoice);
-        vfVoice.tickables.forEach(function(t) {
+        var vfVoices = this.getVexflowVoice(voice, partStaves);
+        allVfVoices.push(vfVoices[0]);
+        vfVoices[0].tickables.forEach(function(t) {
           t.setContext(context)
         });
+        if (vfVoices[2]) {
+          // Lyrics voice
+          allVfVoices.push(vfVoices[2]);
+          vfVoices[2].tickables.forEach(function(t) {
+            t.setContext(context);
+          });
+        }
       }, this);
       startStave += numStaves;
     }, this);
@@ -304,7 +313,14 @@ Vex.Flow.DocumentFormatter.prototype.getMinMeasureWidth = function(m) {
         lastStave = v.stave;
         i++;
       }
-      lastBoundingBox.mergeWith(v.getBoundingBox());
+      var vBox = v.getBoundingBox();
+      if (vBox) {
+        // Sometimes voices don't have bounding boxes, like if they consist
+        // entirely of GhostNotes
+        lastBoundingBox.mergeWith(v.getBoundingBox());
+        console.log(v);
+        console.log(v.getBoundingBox());
+      }
     });
     minHeights[i]  += -lastBoundingBox.getY();
     minHeights[i+1] =  lastBoundingBox.getH()
