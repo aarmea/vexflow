@@ -318,8 +318,6 @@ Vex.Flow.DocumentFormatter.prototype.getMinMeasureWidth = function(m) {
         // Sometimes voices don't have bounding boxes, like if they consist
         // entirely of GhostNotes
         lastBoundingBox.mergeWith(v.getBoundingBox());
-        console.log(v);
-        console.log(v.getBoundingBox());
       }
     });
     minHeights[i]  += -lastBoundingBox.getY();
