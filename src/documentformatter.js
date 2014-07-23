@@ -199,7 +199,9 @@ Vex.Flow.DocumentFormatter.prototype.getVexflowVoice =function(voice, staves){
         }
       }
       lyricVoice.addTickable(new Vex.Flow.TextNote({
-        text: note.lyric.text, duration: note.duration
+        // `line: 10` positions the lyric under the staff
+        // TODO(aarmea): Sometimes `line: 10` isn't low enough
+        text: note.lyric.text, duration: note.duration, line: 10
       }));
     }
     else if (lyricVoice) {
