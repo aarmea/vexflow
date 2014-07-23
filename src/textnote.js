@@ -273,6 +273,22 @@ Vex.Flow.TextNote = (function() {
 
         ctx.restore();
       }
+    },
+
+    getBoundingBox: function() {
+      if (!this.preFormatted) throw new Vex.RERR("UnformattedNote",
+          "Can't call getBoundingBox on an unformatted note.");
+
+
+      // Size approximations
+      var height = this.font.size;
+      var width = this.width * this.font.size / 7.5;
+
+      var min_x = this.getAbsoluteX();
+      // For some reason getYForLine is off by 3
+      var min_y = this.stave.getYForLine(this.line-3) - height;
+
+      return new Vex.Flow.BoundingBox(min_x, min_y, width, height);
     }
   });
 
